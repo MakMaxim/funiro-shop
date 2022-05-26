@@ -1,5 +1,8 @@
 <template>
-   <li class="menu__item">
+   <li
+      class="menu__item"
+      @mouseleave="(isMenuListVisible = false), (isRotate = false)"
+   >
       <div class="menu__name-item">
          <a href="" class="menu__link">{{ menu_item.title }}</a>
          <button
@@ -10,7 +13,7 @@
             <img
                src="@/assets/images/icons/Arrow-down.svg"
                alt="Arrow-down"
-               @click="menuListVisible(), (isRotate = !isRotate)"
+               @mousemove="(isMenuListVisible = true), (isRotate = true)"
             />
          </button>
       </div>
@@ -83,9 +86,8 @@ export default {
    }
    &__sub-list {
       position: absolute;
-      margin: 5px 0;
       background: linear-gradient($lightOrangeColor, $orangeColor);
-      padding: 5px;
+      padding: 10px 5px 5px;
       z-index: 2;
    }
    &__sub-item {
