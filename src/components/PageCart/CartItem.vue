@@ -1,47 +1,64 @@
 <template>
    <article class="cart__item cart-item">
-      <a href="#" class="cart-item__image">
-         <img
-            :src="require('@/assets/images/products/' + cart_item_data.image)"
-            alt="image"
-         />
-      </a>
-      <div class="cart-item__content">
-         <div class="cart-item__body">
-            <div>
-               <h3 class="cart-item__title">{{ cart_item_data.title }}</h3>
-               <div class="cart-item__text">{{ cart_item_data.text }}</div>
-            </div>
-            <div class="cart-item__prices">
-               <div class="cart-item__price">Rp {{ cart_item_data.price }}</div>
-               <div
-                  class="cart-item__price cart-item__price_old"
-                  v-if="cart_item_data.priceOld"
-               >
-                  Rp {{ cart_item_data.priceOld }}
+      <div class="cart-item__cart">
+         <a href="#" class="cart-item__image">
+            <img
+               :src="
+                  require('@/assets/images/products/' + cart_item_data.image)
+               "
+               alt="image"
+            />
+         </a>
+         <div class="cart-item__content">
+            <div class="cart-item__body">
+               <div>
+                  <h3 class="cart-item__title">{{ cart_item_data.title }}</h3>
+                  <div class="cart-item__text">{{ cart_item_data.text }}</div>
+               </div>
+               <div class="cart-item__prices">
+                  <div class="cart-item__price">
+                     Rp {{ cart_item_data.price }}
+                  </div>
+                  <div
+                     class="cart-item__price cart-item__price_old"
+                     v-if="cart_item_data.priceOld"
+                  >
+                     Rp {{ cart_item_data.priceOld }}
+                  </div>
                </div>
             </div>
-         </div>
-         <div class="cart-item__quantity">
-            <p>Quantity:</p>
-            <div>
-               <span class="cart-item__change-quantity" @click="decrement"
-                  >-</span
-               >
-               {{ cart_item_data.quantity }}
-               <span class="cart-item__change-quantity" @click="increment"
-                  >+</span
-               >
+            <div class="cart-item__quantity">
+               <p>Quantity:</p>
+               <div>
+                  <span
+                     class="cart-item__change-quantity"
+                     @click="decrement(cart_item_data.id)"
+                  >
+                     -
+                  </span>
+                  {{ cart_item_data.quantity }}
+                  <span
+                     class="cart-item__change-quantity"
+                     @click="increment(cart_item_data.id)"
+                  >
+                     +
+                  </span>
+               </div>
+            </div>
+            <div
+               class="cart-item__deletebtn btn"
+               @click.prevent="deleteFromCart(cart_item_data.id)"
+            >
+               Delete
             </div>
          </div>
-         <a class="cart-item__deletebtn btn" @click.prevent="deleteFromCart">
-            Delete
-         </a>
       </div>
    </article>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
    props: {
       cart_item_data: {
@@ -49,43 +66,49 @@ export default {
       },
    },
    methods: {
-      increment() {
-         this.$emit("increment");
+      ...mapActions([
+         'INCREMENT_CART_ITEM',
+         'DECREMENT_CART_ITEM',
+         'DELETE_FROM_CART',
+      ]),
+      deleteFromCart(id) {
+         this.DELETE_FROM_CART(id);
       },
-      decrement() {
-         this.$emit("decrement");
+      increment(i) {
+         this.INCREMENT_CART_ITEM(i);
       },
-      deleteFromCart() {
-         this.$emit("deleteFromCart");
+      decrement(i) {
+         this.DECREMENT_CART_ITEM(i);
       },
    },
-   mounted() {},
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/constants.scss";
+@import '@/assets/styles/constants.scss';
 
 .cart-item {
-   display: flex;
-   background-color: #f4f5f7;
-   justify-content: space-between;
-   align-items: center;
-   box-shadow: 0 0 8px 0 #e0e0e0;
-   padding: 16px;
-   margin-bottom: 16px;
-   @media (max-width: $md3 + px) {
-      padding: 0 0 0 0;
-   }
-   @media (max-width: 555px) {
-      flex-direction: column;
-      align-items: flex-start;
+   &__cart {
+      display: flex;
+      background-color: #f4f5f7;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 8px 0 #e0e0e0;
+      padding: 16px;
+      margin-bottom: 16px;
+      @media (max-width: $md3 + px) {
+         padding: 0 0 0 0;
+      }
+      @media (max-width: 555px) {
+         flex-direction: column;
+         align-items: flex-start;
+      }
    }
    &__image {
-      @include adaptiv-value("margin-right", 50, 10, 1);
+      @include adaptiv-value('margin-right', 50, 10, 1);
       img {
          @media (max-width: 555px) {
-            @include adaptiv-value("width", 1243, 290, 1);
+            @include adaptiv-value('width', 1243, 290, 1);
          }
       }
    }
@@ -110,7 +133,7 @@ export default {
       }
    }
    &__title {
-      font-family: "Gilroy Semibold";
+      font-family: 'Gilroy Semibold';
       font-size: 24px;
       line-height: 120%;
       color: $mainColor;
@@ -120,7 +143,7 @@ export default {
       }
    }
    &__text {
-      font-family: "Gilroy Medium";
+      font-family: 'Gilroy Medium';
       line-height: 150%;
       color: $grayColor;
       margin-bottom: 8px;
@@ -139,12 +162,12 @@ export default {
       }
    }
    &__price {
-      font-family: "Gilroy Semibold";
+      font-family: 'Gilroy Semibold';
       font-size: 20px;
       line-height: 150%;
       color: $mainColor;
       &_old {
-         font-family: "Gilroy Regular";
+         font-family: 'Gilroy Regular';
          font-size: 16px;
          color: #b0b0b0;
          margin-left: 16px;
@@ -158,7 +181,7 @@ export default {
       }
    }
    &__quantity {
-      font-family: "Gilroy Semibold";
+      font-family: 'Gilroy Semibold';
       font-size: 24px;
       line-height: 120%;
       color: $mainColor;
@@ -168,7 +191,7 @@ export default {
          p {
             margin-right: 10px;
             @media (max-width: $md3 + px) {
-               @include adaptiv-value("margin-right", 10, 3, 1);
+               @include adaptiv-value('margin-right', 10, 3, 1);
             }
          }
       }
@@ -191,6 +214,22 @@ export default {
       }
       @media (max-width: 555px) {
          padding: 15px 60px;
+      }
+   }
+}
+
+.deleted {
+   display: flex;
+   background-color: #f4f5f7;
+   justify-content: space-between;
+   align-items: center;
+   box-shadow: 0 0 8px 0 #e0e0e0;
+   padding: 16px;
+   margin-bottom: 16px;
+   font-size: 20px;
+   &__text {
+      span {
+         font-family: 'Gilroy Bold';
       }
    }
 }
