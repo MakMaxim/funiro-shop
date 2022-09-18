@@ -6,12 +6,9 @@
             No products in the cart...
          </p>
          <cart-item
-            v-for="(item, i) in CART"
+            v-for="item in CART"
             :key="item.id"
             :cart_item_data="item"
-            @deleteFromCart="deleteFromCart(i)"
-            @increment="increment(i)"
-            @decrement="decrement(i)"
          />
          <div class="cart__total">
             <p>Total:</p>
@@ -22,45 +19,29 @@
 </template>
 
 <script>
-import CartItem from "@/components/PageCart/CartItem.vue";
-import { mapActions, mapGetters } from "vuex";
+import CartItem from '@/components/PageCart/CartItem.vue';
+import { mapGetters } from 'vuex';
 
 export default {
    components: {
       CartItem,
    },
    computed: {
-      ...mapGetters(["CART"]),
+      ...mapGetters(['CART']),
       cartTotalCost() {
          let result = [];
          if (this.CART.length) {
             for (let item of this.CART) {
-               result.push(+item.price.replace(/\./g, "") * item.quantity);
+               result.push(+item.price.replace(/\./g, '') * item.quantity);
             }
             result = result.reduce((sum, cur) => sum + cur, 0);
             return result
                .toString()
                .split(/(?=(?:\d{3})+$)/)
-               .join(".");
+               .join('.');
          } else {
             return 0;
          }
-      },
-   },
-   methods: {
-      ...mapActions([
-         "DELETE_FROM_CART",
-         "INCREMENT_CART_ITEM",
-         "DECREMENT_CART_ITEM",
-      ]),
-      deleteFromCart(i) {
-         this.DELETE_FROM_CART(i);
-      },
-      increment(i) {
-         this.INCREMENT_CART_ITEM(i);
-      },
-      decrement(i) {
-         this.DECREMENT_CART_ITEM(i);
       },
    },
 };

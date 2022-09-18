@@ -8,7 +8,6 @@
                   v-for="product in products"
                   :key="product.id"
                   :product_item="product"
-                  @addToCart="addToCart"
                />
             </transition-group>
          </div>
@@ -24,11 +23,11 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import CatalogItem from "@/components/PageMain/CatalogItem.vue";
+import { mapGetters } from 'vuex';
+import CatalogItem from '@/components/PageMain/CatalogItem.vue';
 
 export default {
-   name: "SectionCatalog",
+   name: 'SectionCatalog',
    data() {
       return {
          products: [],
@@ -39,10 +38,7 @@ export default {
       CatalogItem,
    },
    methods: {
-      ...mapActions(["GET_PRODUCTS_FROM_API", "ADD_TO_CART"]),
-      addToCart(data) {
-         this.ADD_TO_CART(data);
-      },
+      // ...mapActions(["GET_PRODUCTS_FROM_API", "ADD_TO_CART"]),
       loadMore() {
          this.num += 4;
          return this.products.push(
@@ -51,29 +47,31 @@ export default {
       },
    },
    computed: {
-      ...mapGetters(["PRODUCTS", "CART"]),
+      ...mapGetters(['PRODUCTS', 'CART']),
    },
    mounted() {
-      this.GET_PRODUCTS_FROM_API().then((response) => {
-         if (response.data) {
-            this.products = this.PRODUCTS.slice(this.num, this.num + 4);
-         }
-      });
+      // this.GET_PRODUCTS_FROM_API().then((response) => {
+      //    if (response.data) {
+      //       this.products = this.PRODUCTS.slice(this.num, this.num + 4);
+      //    }
+      // });
+
+      this.products = this.PRODUCTS.slice(this.num, this.num + 4);
    },
 };
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/styles/constants.scss";
+@import '@/assets/styles/constants.scss';
 
 .catalog {
-   @include adaptiv-value("margin-bottom", 44, 25, 1);
+   @include adaptiv-value('margin-bottom', 44, 25, 1);
    &__container {
       display: flex;
       flex-direction: column;
    }
    &__title {
-      @include adaptiv-value("margin-bottom", 32, 16, 1);
+      @include adaptiv-value('margin-bottom', 32, 16, 1);
       text-align: center;
    }
    &__list {
@@ -107,14 +105,14 @@ export default {
       flex: 1 1 auto;
    }
    &__title {
-      font-family: "Gilroy Semibold";
+      font-family: 'Gilroy Semibold';
       font-size: 24px;
       line-height: 120%;
       color: $mainColor;
       margin-bottom: 8px;
    }
    &__text {
-      font-family: "Gilroy Normal";
+      font-family: 'Gilroy Normal';
       line-height: 150%;
       color: $grayColor;
       margin-bottom: 8px;
@@ -125,12 +123,12 @@ export default {
       flex-wrap: wrap;
    }
    &__price {
-      font-family: "Gilroy Semibold";
+      font-family: 'Gilroy Semibold';
       font-size: 20px;
       line-height: 150%;
       color: $mainColor;
       &_old {
-         font-family: "Gilroy Regular";
+         font-family: 'Gilroy Regular';
          font-size: 20px;
          color: #b0b0b0;
          margin-left: 16px;

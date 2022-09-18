@@ -21,25 +21,41 @@
             </div>
          </div>
          <div class="catalog-item__actions">
-            <a
-               href="#"
+            <div
                class="catalog-item__addbtn btn"
-               @click.prevent="addToCart"
+               @click.prevent="addToCart(product_item)"
+               v-if="showadd(product_item.id)"
             >
                Add to cart
-            </a>
-            <a class="catalog-item__likebtn btn">
-               <img src="@/assets/images/icons/Like.svg" alt="like" />
-               <div href="">Like</div>
-            </a>
+            </div>
+
+            <div class="catalog-item__quantity" v-else>
+               <span
+                  class="catalog-item__change-quantity"
+                  @click="decrement(product_item.id)"
+               >
+                  -
+               </span>
+               <span class="catalog-item__quantity-num">
+                  {{ quantityItem(product_item.id) }}
+               </span>
+               <span
+                  class="catalog-item__change-quantity"
+                  @click="increment(product_item.id)"
+               >
+                  +
+               </span>
+            </div>
          </div>
       </div>
    </article>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
-   name: "CatalogItem",
+   name: 'CatalogItem',
    props: {
       product_item: {
          type: Object,
@@ -47,15 +63,42 @@ export default {
       },
    },
    methods: {
-      addToCart() {
-         this.$emit("addToCart", this.product_item);
+      ...mapActions([
+         'ADD_TO_CART',
+         'DELETE_FROM_CART',
+         'INCREMENT_CART_ITEM',
+         'DECREMENT_CART_ITEM',
+      ]),
+      addToCart(data) {
+         this.ADD_TO_CART(data);
       },
+      quantityItem(id) {
+         return this.CART.map((elem) =>
+            elem.id === id ? elem.quantity : ''
+         ).filter((e) => e !== '')[0];
+      },
+      showadd(id) {
+         return this.CART.map((elem) =>
+            elem.id === id ? elem.quantity : ''
+         ).filter((e) => e !== '')[0]
+            ? false
+            : true;
+      },
+      increment(i) {
+         this.INCREMENT_CART_ITEM(i);
+      },
+      decrement(i) {
+         this.DECREMENT_CART_ITEM(i);
+      },
+   },
+   computed: {
+      ...mapGetters(['CART']),
    },
 };
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/styles/constants.scss";
+@import '@/assets/styles/constants.scss';
 
 .catalog-item {
    display: flex;
@@ -74,14 +117,14 @@ export default {
       flex: 1 1 auto;
    }
    &__title {
-      font-family: "Gilroy Semibold";
+      font-family: 'Gilroy Semibold';
       font-size: 24px;
       line-height: 120%;
       color: $mainColor;
       margin-bottom: 8px;
    }
    &__text {
-      font-family: "Gilroy Medium";
+      font-family: 'Gilroy Medium';
       line-height: 150%;
       color: $grayColor;
       margin-bottom: 8px;
@@ -93,12 +136,12 @@ export default {
       justify-content: space-between;
    }
    &__price {
-      font-family: "Gilroy Semibold";
+      font-family: 'Gilroy Semibold';
       font-size: 20px;
       line-height: 150%;
       color: $mainColor;
       &_old {
-         font-family: "Gilroy Regular";
+         font-family: 'Gilroy Regular';
          font-size: 16px;
          color: #b0b0b0;
          margin-left: 16px;
@@ -107,6 +150,7 @@ export default {
    }
    &__actions {
       display: flex;
+      flex-direction: column;
    }
    &__addbtn {
       flex: 1 1 50%;
@@ -129,6 +173,18 @@ export default {
       &:hover {
          background-color: $darkOrangeColor;
       }
+   }
+   &__quantity {
+      font-size: 24px;
+      text-align: center;
+      padding: 10px 0;
+      user-select: none;
+   }
+   &__change-quantity {
+      cursor: pointer;
+   }
+   &__quantity-num {
+      margin: 0 16px;
    }
 }
 </style>
