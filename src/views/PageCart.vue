@@ -5,11 +5,13 @@
          <p class="title" v-if="CART.length === 0">
             No products in the cart...
          </p>
-         <cart-item
-            v-for="item in CART"
-            :key="item.id"
-            :cart_item_data="item"
-         />
+         <transition-group name="cart-item">
+            <cart-item
+               v-for="item in CART"
+               :key="item.id"
+               :cart_item_data="item"
+            />
+         </transition-group>
          <div class="cart__total">
             <p>Total:</p>
             <p>{{ cartTotalCost }}</p>
@@ -68,5 +70,11 @@ export default {
       font-size: 20px;
       z-index: 10;
    }
+}
+
+.cart-item-leave-active {
+   transform: translateX(-550px);
+   transition: all 400ms ease-in;
+   opacity: 0;
 }
 </style>
